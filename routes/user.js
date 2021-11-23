@@ -1,13 +1,12 @@
 const router = require("express").Router();
+const {verifyToken} = require('./verifyToken.js')
 
-router.get("/usertest", (req, res) => {
-  res.send("user test is successfull");
+router.put("/id:", verifyToken, (req, res)=>{
+  if(req.user.id === req.params.id || req.user.isAdmin){
+
+  }
 });
 
-router.post("/userposttest", (req, res) => {
-  const username = req.body.username;
-  console.log(username);
-  res.send("username : " + username);
-});
+
 
 module.exports = router;
