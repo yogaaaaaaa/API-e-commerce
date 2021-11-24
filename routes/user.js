@@ -40,5 +40,18 @@ router.delete("/:id", verifyTokenAndAuthorization, async(req, res)=>{
   }
 })
 
+//Get user
+router.get("/find/:id", verifyTokenAndAdmin, async (req, res)=>{
+  try{
+      const user =  await User.findById(req.params.id);
+
+      //Using spread operator, so the password wont be shown to user
+      const {password, ...others} = user._doc;
+
+      res.status(200).json(others);
+  }catch(err){
+    res.status(500).json(err);
+  }
+})
 
 module.exports = router;
