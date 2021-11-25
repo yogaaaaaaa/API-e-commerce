@@ -1,4 +1,4 @@
-const Product = require("../models/product.js");
+const Product = require("../models/Product.js");
 const router = require("express").Router();
 const {
   verifyToken,
@@ -7,17 +7,54 @@ const {
 } = require("./verifyToken.js");
 
 //Create Product
-router.post('/', verifyTokenAndAdmin, async(req, res)=>{
-    const newProduct = new Product(req.body);
+router.post("/", verifyTokenAndAdmin, async (req, res) => {
+  const newProduct = new Product(req.body);
 
+  try {
+    const savedProduct = await newProduct.save();
+    res.status(200).json(savedProduct);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//Get All products
+router.get("/", verifyTokenAndAdmin, async (req, res) => {
+  try {
+    const products = await Product.find();
+
+    res.status(200).json(products);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//Update Products
+router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
+  try {
+    const updateProduct = await Product.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: req.body,
+      },
+      { new: true }
+    );
+    res.status(200).json(updateProduct);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//Delete product
+router.delete("/:id", verifyTokenAndAdmin, async(req, res)=>{
     try{
-        const savedProduct = await newProduct.save();
-        res.status(200).json(savedProduct);
+        await Product.findByIdAndDelete(req.params.id);
+
+        res.status(200).json("Product has been successfully deleted....");
     }catch(err){
         res.status(500).json(err);
     }
 })
-
 
 // //Update user
 // router.put("/:id", verifyToken, async (req, res) => {
