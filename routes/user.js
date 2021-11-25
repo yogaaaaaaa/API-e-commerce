@@ -77,18 +77,19 @@ router.get("/stats", verifyTokenAndAdmin, async (req, res) => {
       { $match: { createdAt: { $gte: lastYear } } },
       {
         $project: {
-          month: { $month: $createdAt },
+          month: { $month: "$createdAt" },
         },
       },
       {
         $group: {
           _id: "$month",
-          total: { $sum: 1}
-        }
-      }
+          total: { $sum: 1 },
+        },
+      },
     ]);
     res.status(200).json(data);
   } catch (err) {
+    console.log(err)
     res.status(500).json(err);
   }
 });
