@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 
+//Anyone who has token can use it 
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers.token;
   if (authHeader) {
@@ -14,6 +15,7 @@ const verifyToken = (req, res, next) => {
   }
 };
 
+//Only user id that match with token can use it or as an admin
 const verifyTokenAndAuthorization = (req, res, next) => {
   verifyToken(req, res, () => {
     if (req.user.id === req.params.id || req.user.isAdmin) {
@@ -24,7 +26,7 @@ const verifyTokenAndAuthorization = (req, res, next) => {
   });
 };
 
-//Checking wether user is Admin
+//Checking wether user is Admin can use it
 const verifyTokenAndAdmin = (req, res, next) => {
   verifyToken(req, res, () => {
     if (req.user.isAdmin) {
