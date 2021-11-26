@@ -19,10 +19,23 @@ router.post("/", verifyTokenAndAdmin, async (req, res) => {
 });
 
 //Get All products
-router.get("/", verifyTokenAndAdmin, async (req, res) => {
+router.get("/", async (req, res) => {
+  let qNew = req.query.new;
+  let qCategory = req.query.category;
   try {
-    const products = await Product.find();
+    let products;
 
+    if (qNew) {
+      products = await Product.find().sort({ createdAt: -1 }).limit(2);
+    } else if (qCategory) {
+      products = await Product.find({
+        categories: {
+          $in: [qCategory],
+        },
+      });
+    } else {
+      products = await Product.find();
+    }
     res.status(200).json(products);
   } catch (err) {
     res.status(500).json(err);
@@ -46,15 +59,26 @@ router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
 });
 
 //Delete product
-router.delete("/:id", verifyTokenAndAdmin, async(req, res)=>{
-    try{
-        await Product.findByIdAndDelete(req.params.id);
+router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
+  try {
+    await Product.findByIdAndDelete(req.params.id);
 
-        res.status(200).json("Product has been successfully deleted....");
-    }catch(err){
-        res.status(500).json(err);
-    }
-})
+    res.status(200).json("Product has been successfully deleted....");
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//Get product
+router.get("/find/:id", async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+
+    res.status(200).json(product);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 
 // //Update user
 // router.put("/:id", verifyToken, async (req, res) => {
