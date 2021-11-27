@@ -6,12 +6,12 @@ const {
   verifyTokenAndAdmin,
 } = require("./verifyToken.js");
 
-//Create Cart
+//Create order
 router.post("/", verifyToken, async (req, res) => {
-  const newOrder = new Cart.aggregate(req.body);
+  const newOrder = new Order(req.body);
 
   try {
-    const savedOrder = await Order.save();
+    const savedOrder = await newOrder.save();
     res.status(200).json(savedOrder);
   } catch (err) {
     res.status(500).json(err);
@@ -69,7 +69,7 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
 router.get("/income", verifyTokenAndAdmin, async (req, res) => {
   let date = new Date();
   let lastMonth = new Date(date.setMonth(date.getMonth() - 1));
-  let previousMonth = new Date(new Date().setMonth(lastMonth.getMonth() - 1));
+  let previousMonth = new Date(new Date().setMonth(lastMonth.getMonth() - 2));
 
   try {
     let income = await Order.aggregate([
@@ -83,10 +83,11 @@ router.get("/income", verifyTokenAndAdmin, async (req, res) => {
       {
         $group: {
           _id: "$month",
-          total: { $sum: "sales" },
+          total: { $sum: "$sales" },
         },
       },
     ]);
+    res.status(200).json(income);
   } catch (err) {
     res.status(err).json(err);
   }
