@@ -22,8 +22,8 @@ app.use(express.json());
 app.use("/api/auth", userAuth);
 app.use("/api/users", userRoute);
 app.use("/api/products", productRoute);
-app.use("/api/cart", cartRoute);
-app.use("/api/order", orderRoute);
+app.use("/api/carts", cartRoute);
+app.use("/api/orders", orderRoute);
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(`Backend is running on port 3000!`);
