@@ -25,6 +25,6 @@ app.use("/api/products", productRoute);
 app.use("/api/carts", cartRoute);
 app.use("/api/orders", orderRoute);
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log(`Backend is running on port 3000!`);
+app.listen(process.env.PORT || 5000, () => {
+  console.log(`Backend is running on port 5000!`);
 });
